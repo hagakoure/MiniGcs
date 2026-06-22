@@ -1,0 +1,52 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MiniGcs.App.ViewModels"
+             x:Class="MiniGcs.App.Views.ControlPanelView"
+             x:DataType="vm:ControlPanelViewModel">
+    
+    <StackPanel Spacing="10">
+        <TextBlock Text="УПРАВЛЕНИЕ" Classes="header" Foreground="#FF79C6"/>
+        
+        <Button Content="Взвести" 
+               Command="{Binding ArmCommand}"
+               Classes="action"
+               Background="#6272A4" Foreground="#F8F8F2"/>
+        
+        <Button Content="Снять с взвода" 
+               Command="{Binding DisarmCommand}"
+               Classes="action"
+               Background="#6272A4" Foreground="#F8F8F2"/>
+        
+        <Button Content="Взлёт" 
+               Command="{Binding TakeoffCommand}"
+               Classes="action"
+               Background="#50FA7B" Foreground="#282A36"/>
+        
+        <Button Content="Посадка" 
+               Command="{Binding LandCommand}"
+               Classes="action"
+               Background="#FFB86C" Foreground="#282A36"/>
+        
+        <Button Content="Возврат домой" 
+               Command="{Binding ReturnToHomeCommand}"
+               Classes="action"
+               Background="#8BE9FD" Foreground="#282A36"/>
+        
+        <Button Content="Зависание" 
+               Command="{Binding HoldPositionCommand}"
+               Classes="action"
+               Background="#F1FA8C" Foreground="#282A36"/>
+        
+        <Button Content="АВАРИЙНАЯ ОСТАНОВКА" 
+               Command="{Binding EmergencyStopCommand}"
+               Classes="action"
+               Background="#FF5555" Foreground="#F8F8F2"
+               FontWeight="Bold"/>
+        
+        <Separator Margin="0,5" Background="#44475A"/>
+        
+        <TextBlock Text="{Binding StatusMessage}" 
+                  Foreground="#F8F8F2" FontSize="12"
+                  TextWrapping="Wrap"/>
+    </StackPanel>
+</UserControl>

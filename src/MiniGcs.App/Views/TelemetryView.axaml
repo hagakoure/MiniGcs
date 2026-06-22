@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MiniGcs.App.ViewModels"
+             x:Class="MiniGcs.App.Views.TelemetryView"
+             x:DataType="vm:TelemetryViewModel">
+    
+    <StackPanel Spacing="8">
+        <TextBlock Text="ТЕЛЕМЕТРИЯ" Classes="header" Foreground="#BD93F9"/>
+        
+        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Широта:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" 
+                      Text="{Binding Latitude, StringFormat='{}{0:F6}'}" 
+                      Classes="value" Foreground="#50FA7B"/>
+            
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Долгота:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" 
+                      Text="{Binding Longitude, StringFormat='{}{0:F6}'}" 
+                      Classes="value" Foreground="#50FA7B"/>
+            
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Высота:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" 
+                      Text="{Binding Altitude, StringFormat='{}{0:F1} м'}" 
+                      Classes="value" Foreground="#FFB86C"/>
+            
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Скорость:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" 
+                      Text="{Binding Speed, StringFormat='{}{0:F1} м/с ({1:F1} км/ч)'}" 
+                      Classes="value" Foreground="#8BE9FD"
+                      x:DataType="vm:TelemetryViewModel"/>
+            
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Курс:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="4" Grid.Column="1" 
+                      Text="{Binding Heading, StringFormat='{}{0:F0}°'}" 
+                      Classes="value" Foreground="#F1FA8C"/>
+            
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Батарея:" Foreground="#F8F8F2"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" 
+                      Text="{Binding BatteryLevel, StringFormat='{}{0:F0}%'}" 
+                      Classes="value" Foreground="#FF79C6"/>
+        </Grid>
+        
+        <Separator Margin="0,5" Background="#44475A"/>
+        
+        <Grid ColumnDefinitions="*,*">
+            <StackPanel>
+                <TextBlock Text="Состояние:" Foreground="#F8F8F2" FontSize="12"/>
+                <TextBlock Text="{Binding StateText}" 
+                          FontWeight="Bold" Foreground="#50FA7B"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Обновлено:" Foreground="#F8F8F2" FontSize="12"/>
+                <TextBlock Text="{Binding LastUpdate}" 
+                          FontWeight="Bold" Foreground="#F8F8F2"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

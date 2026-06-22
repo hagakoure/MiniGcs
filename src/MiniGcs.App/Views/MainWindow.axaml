@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MiniGcs.App.ViewModels"
+        xmlns:views="using:MiniGcs.App.Views"
+        x:Class="MiniGcs.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Mini GCS - Ground Control Station"
+        Width="1400" Height="900"
+        MinWidth="1000" MinHeight="700">
+    
+    <Grid ColumnDefinitions="*,380">
+        
+        <!-- Левая часть: Карта + Лог -->
+        <Grid RowDefinitions="*,220" Grid.Column="0">
+            
+            <!-- Карта -->
+            <Border Grid.Row="0" Classes="panel">
+                <views:MapView DataContext="{Binding Map}"/>
+            </Border>
+            
+            <!-- Лог событий -->
+            <Border Grid.Row="1" Classes="panel">
+                <views:LogView DataContext="{Binding Log}"/>
+            </Border>
+            
+        </Grid>
+        
+        <!-- Правая часть: Телеметрия + Управление + Подключение -->
+        <Border Grid.Column="1" Background="#252535">
+            <ScrollViewer>
+                <StackPanel Margin="15" Spacing="10">
+                    
+                    <!-- Панель подключения -->
+                    <Border Classes="panel">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="ПОДКЛЮЧЕНИЕ" Classes="header" 
+                                      Foreground="#8BE9FD"/>
+                            
+                            <Grid ColumnDefinitions="*,100" RowDefinitions="Auto,Auto">
+                                <TextBox Grid.Row="0" Grid.Column="0" 
+                                        Text="{Binding Host}" 
+                                        Watermark="Хост" Margin="0,0,5,5"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" 
+                                        Text="{Binding Port}" 
+                                        Watermark="Порт" Margin="0,0,0,5"/>
+                            </Grid>
+                            
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Button Content="Подключить" 
+                                       Command="{Binding ConnectCommand}"
+                                       Classes="action"
+                                       Background="#50FA7B" Foreground="#282A36"
+                                       Width="150"/>
+                                <Button Content="Отключить" 
+                                       Command="{Binding DisconnectCommand}"
+                                       Classes="action"
+                                       Background="#FF5555" Foreground="#282A36"
+                                       Width="150"/>
+                            </StackPanel>
+                            
+                            <TextBlock Text="{Binding ConnectionStatus}" 
+                                      Foreground="#F8F8F2" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Панель телеметрии -->
+                    <Border Classes="panel">
+                        <views:TelemetryView DataContext="{Binding Telemetry}"/>
+                    </Border>
+                    
+                    <!-- Панель управления -->
+                    <Border Classes="panel">
+                        <views:ControlPanelView DataContext="{Binding ControlPanel}"/>
+                    </Border>
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        
+    </Grid>
+</Window>

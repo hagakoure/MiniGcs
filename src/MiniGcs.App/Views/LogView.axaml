@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MiniGcs.App.ViewModels"
+             x:Class="MiniGcs.App.Views.LogView"
+             x:DataType="vm:LogViewModel">
+    
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" 
+                   Text="ЖУРНАЛ СОБЫТИЙ" 
+                   Classes="header" Foreground="#F1FA8C"/>
+        
+        <ListBox ItemsSource="{Binding Messages}"
+                 Background="Transparent"
+                 Foreground="#50FA7B"
+                 FontFamily="Consolas, Courier New"
+                 FontSize="12"
+                 BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Foreground="#50FA7B"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>
