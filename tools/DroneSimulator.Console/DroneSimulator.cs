@@ -10,14 +10,10 @@ namespace DroneSimulator.Console;
 /// Эмулятор дрона для тестирования GCS
 /// Отправляет телеметрию и принимает команды
 /// </summary>
-public class DroneSimulatorApp
+public class DroneSimulatorApp(string gcsHost, int gcsPort, int listenPort)
 {
-    private readonly int _listenPort;
-    private readonly string _gcsHost;
-    private readonly int _gcsPort;
-    
     // Состояние дрона
-    private double _latitude = 55.7558;   // Москва
+    private double _latitude = 55.7558;
     private double _longitude = 37.6173;
     private double _altitude;
     private double _speed;
@@ -30,19 +26,12 @@ public class DroneSimulatorApp
     private double? _targetLon;
     
     private readonly CancellationTokenSource _cts = new();
-    
-    public DroneSimulatorApp(string gcsHost, int gcsPort, int listenPort)
-    {
-        _gcsHost = gcsHost;
-        _gcsPort = gcsPort;
-        _listenPort = listenPort;
-    }
-    
+
     public async Task RunAsync()
     {
         System.Console.WriteLine("Drone Simulator запущен");
-        System.Console.WriteLine($"Отправка телеметрии на {_gcsHost}:{_gcsPort}");
-        System.Console.WriteLine($"Ожидание команд на порту {_listenPort}");
+        System.Console.WriteLine($"Отправка телеметрии на {gcsHost}:{gcsPort}");
+        System.Console.WriteLine($"Ожидание команд на порту {listenPort}");
         System.Console.WriteLine("─────────────────────────────────────");
         
         // Запускаем параллельно: отправку телеметрии и приём команд
@@ -77,7 +66,7 @@ public class DroneSimulatorApp
                 var data = BuildTelemetryPacket();
                 
                 // Отправляем на GCS
-                await udpClient.SendAsync(data, new IPEndPoint(IPAddress.Parse(_gcsHost), _gcsPort));
+                await udpClient.SendAsync(data, new IPEndPoint(IPAddress.Parse(gcsHost), gcsPort), ct);
                 
                 // Выводим в консоль
                 PrintStatus();
@@ -102,7 +91,7 @@ public class DroneSimulatorApp
     /// </summary>
     private async Task ReceiveCommandsLoop(CancellationToken ct)
     {
-        using var listener = new UdpClient(_listenPort);
+        using var listener = new UdpClient(listenPort);
         
         while (!ct.IsCancellationRequested)
         {

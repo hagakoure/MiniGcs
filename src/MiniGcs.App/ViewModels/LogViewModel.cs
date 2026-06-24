@@ -6,7 +6,7 @@ namespace MiniGcs.App.ViewModels;
 
 public partial class LogViewModel : ObservableObject
 {
-    public ObservableCollection<string> Messages { get; } = new();
+    public ObservableCollection<string> Messages { get; } = [];
     
     private const int MaxMessages = 200;
     

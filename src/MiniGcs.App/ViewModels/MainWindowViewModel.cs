@@ -19,17 +19,18 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     private readonly CancellationTokenSource _cts = new();
     private Task? _telemetrySubscriptionTask;
     
-    // Под-ViewModel для разных панелей
     public TelemetryViewModel Telemetry { get; }
     public ControlPanelViewModel ControlPanel { get; }
     public MapViewModel Map { get; }
     public LogViewModel Log { get; }
     
-    // Параметры подключения
     [ObservableProperty] private string _host = "127.0.0.1";
     [ObservableProperty] private int _port = 9001;
     [ObservableProperty] private bool _isConnected;
     [ObservableProperty] private string _connectionStatus = "Не подключено";
+    
+    // Событие для передачи данных в MapView
+    public event Action<double, double, double>? DronePositionUpdated;
     
     [ActivatorUtilitiesConstructor]
     public MainWindowViewModel(IMediator mediator, ITelemetryStream telemetryStream)
@@ -45,11 +46,9 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         AddLogMessage("Приложение запущено");
         AddLogMessage($"Целевой адрес: {Host}:{Port}");
         
-        // Запускаем подписку на телеметрию в фоне
         StartTelemetrySubscription();
     }
     
-    // Конструктор для дизайнера
     public MainWindowViewModel() : this(null!, null!)
     {
         Telemetry.Latitude = 55.7558;
@@ -70,7 +69,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             {
                 await foreach (var telemetry in _telemetryStream.SubscribeAsync(_cts.Token))
                 {
-                    // Маппим Domain Event в DTO
                     var dto = new TelemetryDto
                     {
                         DeviceId = telemetry.DeviceId,
@@ -84,17 +82,13 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
                         Timestamp = telemetry.Timestamp
                     };
                     
-                    // Обновляем UI в UI потоке
                     Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                     {
                         UpdateTelemetry(dto);
                     });
                 }
             }
-            catch (OperationCanceledException)
-            {
-                // Нормальное завершение при закрытии приложения
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 Avalonia.Threading.Dispatcher.UIThread.Post(() =>
@@ -157,7 +151,13 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void UpdateTelemetry(TelemetryDto telemetry)
     {
         Telemetry.UpdateFromDto(telemetry);
-        Map.UpdateDronePosition(telemetry.Latitude, telemetry.Longitude, telemetry.Heading);
+        Map.UpdatePosition(telemetry.Latitude, telemetry.Longitude, telemetry.Heading);
+        
+        // Вызываем событие для MapView
+        DronePositionUpdated?.Invoke(
+            telemetry.Latitude, 
+            telemetry.Longitude, 
+            telemetry.Heading);
     }
     
     public void AddLogMessage(string message)
