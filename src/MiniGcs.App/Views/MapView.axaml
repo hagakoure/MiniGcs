@@ -1,58 +1,49 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MiniGcs.App.ViewModels"
+             xmlns:views="using:MiniGcs.App.Views"
              x:Class="MiniGcs.App.Views.MapView"
              x:DataType="vm:MapViewModel">
     
     <Grid>
-        <!-- Фон карты (сетка) -->
-        <Border Background="#1A1A2E">
-            <Canvas Name="MapCanvas">
-                <!-- Сетка -->
-                <Line StartPoint="0,150" EndPoint="800,150" Stroke="#2A2A3E" StrokeThickness="1"/>
-                <Line StartPoint="0,300" EndPoint="800,300" Stroke="#2A2A3E" StrokeThickness="1"/>
-                <Line StartPoint="0,450" EndPoint="800,450" Stroke="#2A2A3E" StrokeThickness="1"/>
-                <Line StartPoint="200,0" EndPoint="200,600" Stroke="#2A2A3E" StrokeThickness="1"/>
-                <Line StartPoint="400,0" EndPoint="400,600" Stroke="#2A2A3E" StrokeThickness="1"/>
-                <Line StartPoint="600,0" EndPoint="600,600" Stroke="#2A2A3E" StrokeThickness="1"/>
-                
-                <!-- Центр карты (дом) -->
-                <Ellipse Canvas.Left="395" Canvas.Top="295" Width="10" Height="10" 
-                        Fill="#FF5555"/>
-                <TextBlock Canvas.Left="410" Canvas.Top="290" Text="HOME" 
-                          Foreground="#FF5555" FontSize="10"/>
-                
-                <!-- Маркер дрона -->
-                <Canvas Canvas.Left="{Binding DroneX}" Canvas.Top="{Binding DroneY}">
-                    <Canvas.RenderTransform>
-                        <RotateTransform Angle="{Binding DroneRotation}" CenterX="10" CenterY="10"/>
-                    </Canvas.RenderTransform>
-                    
-                    <!-- Треугольник дрона -->
-                    <Polygon Points="10,0 20,20 10,15 0,20" 
-                            Fill="#50FA7B" Stroke="#F8F8F2" StrokeThickness="1"/>
-                </Canvas>
-                
-            </Canvas>
+        <!-- карта -->
+        <views:MapCanvas x:Name="TheMapCanvas" />
+        
+        <!-- Панель управления -->
+        <Border VerticalAlignment="Top" HorizontalAlignment="Right" 
+                Background="#2A2A3E" CornerRadius="5" Padding="10" Margin="10"
+                Opacity="0.9">
+            <StackPanel Spacing="5">
+                <Button Content="+" Click="ZoomIn_Click" 
+                       Background="#50FA7B" Foreground="#282A36"
+                       Width="40" Height="40" FontSize="16" FontWeight="Bold"/>
+                <Button Content="-" Click="ZoomOut_Click"
+                       Background="#50FA7B" Foreground="#282A36"
+                       Width="40" Height="40" FontSize="16" FontWeight="Bold"/>
+                <Button Content="*" Click="CenterOnDrone_Click"
+                       Background="#8BE9FD" Foreground="#282A36"
+                       Width="40" Height="40" FontSize="16"/>
+                <Button Content="A" Click="ToggleAutoCenter_Click"
+                       Background="#FF79C6" Foreground="#282A36"
+                       Width="40" Height="40" FontSize="14" FontWeight="Bold"/>
+            </StackPanel>
         </Border>
         
-        <!-- Заголовок -->
-        <Border VerticalAlignment="Top" HorizontalAlignment="Left" 
-                Background="#2A2A3E" CornerRadius="5" Padding="10" Margin="10">
-            <TextBlock Text="КАРТА (2D визуализация)" 
-                      Foreground="#8BE9FD" FontWeight="Bold"/>
-        </Border>
-        
-        <!-- Информация о позиции -->
+        <!-- Информация -->
         <Border VerticalAlignment="Bottom" HorizontalAlignment="Left" 
-                Background="#2A2A3E" CornerRadius="5" Padding="10" Margin="10">
+                Background="#2A2A3E" CornerRadius="5" Padding="10" Margin="10"
+                Opacity="0.9">
             <StackPanel>
-                <TextBlock Text="{Binding DroneX, StringFormat='X: {0:F0} px'}" 
+                <TextBlock Text="КАРТА (Avalonia Canvas)" 
+                          Foreground="#8BE9FD" FontWeight="Bold" FontSize="12"/>
+                <TextBlock Text="{Binding CenterLat, StringFormat='Center Lat: {0:F6}'}" 
                           Foreground="#F8F8F2" FontSize="11"/>
-                <TextBlock Text="{Binding DroneY, StringFormat='Y: {0:F0} px'}" 
+                <TextBlock Text="{Binding CenterLon, StringFormat='Center Lon: {0:F6}'}" 
                           Foreground="#F8F8F2" FontSize="11"/>
-                <TextBlock Text="{Binding DroneRotation, StringFormat='Heading: {0:F0}°'}" 
+                <TextBlock Text="{Binding ZoomLevel, StringFormat='Zoom: {0}'}" 
                           Foreground="#F8F8F2" FontSize="11"/>
+                <TextBlock Text="{Binding AutoCenterOnDrone, StringFormat='Автоцентр: {0}'}" 
+                          Foreground="#F1FA8C" FontSize="11"/>
             </StackPanel>
         </Border>
     </Grid>

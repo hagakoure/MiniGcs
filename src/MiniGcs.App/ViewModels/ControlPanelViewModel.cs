@@ -8,18 +8,11 @@ using MiniGcs.Domain.Enums;
 
 namespace MiniGcs.App.ViewModels;
 
-public partial class ControlPanelViewModel : ObservableObject
+public partial class ControlPanelViewModel(IMediator? mediator) : ObservableObject
 {
-    private readonly IMediator _mediator;
-    
     [ObservableProperty] private bool _isConnected;
     [ObservableProperty] private string _statusMessage = "Ожидание подключения";
-    
-    public ControlPanelViewModel(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-    
+
     // Конструктор для дизайнера
     public ControlPanelViewModel() : this(null!)
     {
@@ -87,7 +80,7 @@ public partial class ControlPanelViewModel : ObservableObject
     
     private async Task SendCommandAsync(CommandType commandType, string commandName)
     {
-        if (_mediator == null) return;
+        if (mediator == null) return;
         
         if (!IsConnected)
         {
@@ -99,7 +92,7 @@ public partial class ControlPanelViewModel : ObservableObject
         {
             StatusMessage = $"Отправка: {commandName}...";
             
-            var result = await _mediator.Send(
+            var result = await mediator.Send(
                 new SendDeviceCommandCommand(commandType));
             
             StatusMessage = result.IsSuccess 

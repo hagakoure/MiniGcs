@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,20 +7,10 @@ using MiniGcs.App.Views;
 
 namespace MiniGcs.App;
 
-public partial class App : Avalonia.Application 
+public partial class App(IHost host) : Avalonia.Application
 {
-    private readonly IHost _host;
-    
-    // Конструктор для дизайнера (без DI)
-    public App()
+    public App() : this(null!)
     {
-        _host = null!;
-    }
-    
-    // Конструктор для реального запуска (с DI)
-    public App(IHost host)
-    {
-        _host = host;
     }
     
     public override void Initialize()
@@ -33,7 +22,7 @@ public partial class App : Avalonia.Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var mainViewModel = _host?.Services.GetRequiredService<MainWindowViewModel>()
+            var mainViewModel = host?.Services.GetRequiredService<MainWindowViewModel>()
                                 ?? new MainWindowViewModel();
             
             desktop.MainWindow = new MainWindow
